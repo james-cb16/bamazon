@@ -35,10 +35,55 @@ function chooseItem(inventory) {
         {
             type: 'input',
             name: 'choice',
-            message: 'What would you like to purchase? Please enter the ID of the item that you choose. Type [Quit] to exit.',
-            validate: function (val) {
-                return !isNaN(val);
+            message: 'What would you like to purchase? Please enter the ID of the item that you choose. Type [Quit] to exit.'
+        }
+    ]).then(function (val) {
+        var choiceId = parseInt(val.choice)
+        if (val.choice.toLowerCase() === 'quit') {
+            exit();
+        } else if (isNaN(val.choice)) {
+            console.log('Please enter a valid input.');
+            setTimeout(displayProducts, 2000);
+        }
+        else {
+            for (var i = 0; i < inventory.length; i++) {
+                if (inventory[i].item_id === choiceId) {
+                    productQuantity(inventory[i]);
+
+                }
+            }
+
+        }
+
+    })
+}
+
+function productQuantity(product) {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'quantity',
+            message: 'Please enter an amount. Type [Quit] to exit.'
+        }
+    ]).then(function (val) {
+        if (val.quantity.toLowerCase() === 'quit') {
+            exit();
+        } else {
+            if (val.quantity > product.stock_quantity) {
+                console.log('The amount you have chosen exceeds the number of products available.');
+                setTimeout(displayProducts, 2000);
+            } else if (parseInt(val.quantity) < 1) {
+                console.log('You must enter a number greater than 0.')
+                setTimeout(displayProducts, 2000);
+            }
+            else {
+                purchaseProduct(product, val.quantity);
             }
         }
-    ])
+    })
+}
+
+function exit() {
+    console.log("Closing application. Have a great day!");
+    setTimeout(function () { process.exit(0) }, 2000);
 }
