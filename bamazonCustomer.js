@@ -83,6 +83,17 @@ function productQuantity(product) {
     })
 }
 
+function purchaseProduct(product, quantity) {
+    connection.query(
+        "UPDATE ren7kbjw9m3kw1qg.bamazon_products SET stock_quantity = stock_quantity - ? WHERE item_id = ?",
+        [quantity, product.item_id],
+        function (err, res) {
+            console.log('You have purchased ' + quantity + " " + product.product_name + '(s)!');
+            setTimeout(displayProducts, 2000);
+        }
+    )
+}
+
 function exit() {
     console.log("Closing application. Have a great day!");
     setTimeout(function () { process.exit(0) }, 2000);
